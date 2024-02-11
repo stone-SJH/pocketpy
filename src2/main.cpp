@@ -56,7 +56,7 @@ static int f_input(pkpy_vm* vm){
     return 1;
 }
 
-int main(int argc, char** argv){
+int main(){
 #if _WIN32
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
@@ -66,6 +66,17 @@ int main(int argc, char** argv){
     pkpy_push_function(vm, "input(prompt=None) -> str", f_input);
     pkpy_eval(vm, "__import__('builtins')");
     pkpy_setattr(vm, pkpy_name("input"));
+
+    const char* src = "x = 0; print(x);";
+    const char* filename = "pydemo.py";
+    char* out;
+    bool ok;
+    //pkpy_compile_to_string(vm, src, filename, 0, &ok, &out);
+
+    pkpy_exec(vm, src);
+    //pkpy_compile_to_string(vm, )
+    /*
+
 
     if(argc == 1){
         void* repl = pkpy_new_repl(vm);
@@ -107,7 +118,7 @@ int main(int argc, char** argv){
         pkpy_delete_vm(vm);
         return ok ? 0 : 1;
     }
-
+*/
 __HELP:
     std::cout << "Usage: pocketpy [filename]" << std::endl;
     return 0;

@@ -223,6 +223,16 @@ void add_module_traceback(VM* vm){
 void add_module_dis(VM* vm){
     PyObject* mod = vm->new_module("dis");
 
+    static const auto get_code = [](VM* vm, PyObject* obj)->CodeObject_{
+        if(is_type(obj, vm->tp_str)){
+            const Str& source = CAST(Str, obj);
+            return vm->compile(source, "<dis>", EXEC_MODE);
+        }
+        PyObject* f = obj;
+        if(is_type(f, vm->tp_bound_method)) f = CAST(BoundMethod, obj).func;
+        return CAST(Function&, f).decl->code;
+    };
+
     vm->bind_func<1>(mod, "dis", [](VM* vm, ArgsView args) {
         CodeObject_ code;
         PyObject* obj = args[0];
@@ -235,6 +245,11 @@ void add_module_dis(VM* vm){
         code = CAST(Function&, f).decl->code;
         vm->stdout_write(vm->disassemble(code));
         return vm->None;
+    });
+
+    vm->bind_func<1>(mod, "_s", [](VM* vm, ArgsView args) {
+        CodeObject_ code = get_code(vm, args[0]);
+        return VAR(code->serialize(vm));
     });
 }
 

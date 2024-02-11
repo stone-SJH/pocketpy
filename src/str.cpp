@@ -182,6 +182,13 @@ int utf8len(unsigned char c, bool suppress){
         return substr(start, size - start);
     }
 
+    char* Str::c_str_dup() const {
+        char* p = (char*)malloc(size + 1);
+        memcpy(p, data, size);
+        p[size] = 0;
+        return p;
+    }
+
     const char* Str::c_str() const{
         return data;
     }

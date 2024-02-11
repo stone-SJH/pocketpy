@@ -62,6 +62,7 @@ struct Str{
 
     Str substr(int start, int len) const;
     Str substr(int start) const;
+    char* c_str_dup() const;
     const char* c_str() const;
     std::string_view sv() const;
     std::string str() const;
