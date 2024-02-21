@@ -67,11 +67,41 @@ int main(){
     pkpy_eval(vm, "__import__('builtins')");
     pkpy_setattr(vm, pkpy_name("input"));
 
-    const char* src = "x = 0; print(x);";
+    const char* src = R"(
+try:
+    print(0,' ', '', exp=' ')
+except ValueError:
+    pass
+
+def test(a, b, c = " "):
+    try:
+        print(a)
+        print(b, exp=" ")
+        print(c)
+    except:
+        print(b, exp21=" ")
+try:
+    i = 1
+    print(i)
+    j = 2
+    print(j)
+    t = 3
+    print(t)
+    test(i, j)
+except:
+    i = 11
+    print(i)
+    j = 21
+    print(j)
+    t = 31
+    print(t)
+    print('xxx')
+print('done')
+)";
     const char* filename = "pydemo.py";
     char* out;
     bool ok;
-    //pkpy_compile_to_string(vm, src, filename, 0, &ok, &out);
+    pkpy_compile_to_string(vm, src, filename, 0, &ok, &out);
 
     pkpy_exec(vm, src);
     //pkpy_compile_to_string(vm, )

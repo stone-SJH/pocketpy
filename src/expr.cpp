@@ -3,7 +3,7 @@
 namespace pkpy{
 
     inline bool is_imm_int(i64 v){
-        return v >= INT16_MIN && v <= INT16_MAX;
+        return v >= 0 && v <= INT16_MAX;
     }
 
     inline bool is_identifier(std::string_view s){

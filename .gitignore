@@ -4,6 +4,7 @@ __pycache__/
 .DS_Store
 .coverage
 .idea
+.vs
 
 cmake-build-debug/
 
