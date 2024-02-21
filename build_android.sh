@@ -12,7 +12,7 @@ cmake \
     -DANDROID_PLATFORM=android-22 \
     -DANDROID_STL=c++_shared \
     ../../.. \
-    -DPK_BUILD_SHARED_LIB=ON -DPK_USE_CJSON=ON \
+    -DPK_BUILD_SHARED_LIB=ON -DPK_USE_CJSON=OFF \
     -DCMAKE_BUILD_TYPE=Release
 
 cmake --build . --config Release

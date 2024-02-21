@@ -16,7 +16,7 @@
 // Enable this if you are working with multi-threading (experimental)
 // This triggers necessary locks to make the VM thread-safe
 #ifndef PK_ENABLE_THREAD            // can be overrided by cmake
-#define PK_ENABLE_THREAD            0
+#define PK_ENABLE_THREAD            1
 #endif
 
 // GC min threshold

@@ -25,6 +25,7 @@ else()
     # disable -Wshorten-64-to-32 for apple
     if(APPLE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shorten-64-to-32")
+        set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
     endif()
 endif()
 
