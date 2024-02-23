@@ -116,6 +116,15 @@ namespace pkpy{
         buffer += END;
     }
 
+    void CodeObjectSerializer::write_tuple(VM* vm, Tuple t) {
+        buffer += "t";
+        buffer += std::to_string(t.size());
+        buffer += END;
+        for (int i = 0; i < t.size(); i++) {
+            write_object(vm, t[i]);
+        }
+    }
+
     void CodeObjectSerializer::write_begin_mark(){
         buffer += '[';
         buffer += END;

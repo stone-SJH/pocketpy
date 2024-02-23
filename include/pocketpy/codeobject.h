@@ -73,6 +73,7 @@ using FuncDecl_ = std::shared_ptr<FuncDecl>;
         void write_none();
         void write_ellipsis();
         void write_bool(bool v);
+        void write_tuple(VM* vm, Tuple t);
         void write_begin_mark();
         void write_name(StrName name);
         void write_end_mark();
