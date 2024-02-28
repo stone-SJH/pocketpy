@@ -33,6 +33,25 @@ namespace pkpy{
 
     Str SourceData::snapshot(int lineno, const char* cursor, std::string_view name) const{
         SStream ss;
+        std::string meta = "";
+        //write filename as string
+        meta += 's';
+        meta += filename.escape(false).str();
+        meta += '\n';
+
+        //write lineno as int
+        meta += 'i';
+        meta += std::to_string(lineno);
+        meta += '\n';
+
+        //write name as string
+        meta += 's';
+        if (!name.empty()) meta += name;
+        meta += '\n';
+
+        //write column as int
+        meta += 'i';
+
         ss << "  " << "File \"" << filename << "\", line " << lineno;
         if(!name.empty()) ss << ", in " << name;
         if(!source.empty()){
@@ -48,11 +67,14 @@ namespace pkpy{
             ss << "    " << line;
             if(cursor && line != "<?>" && cursor >= pair.first && cursor <= pair.second){
                 auto column = cursor - pair.first - removed_spaces;
+                meta += std::to_string(column);
                 if(column >= 0) ss << "\n    " << std::string(column, ' ') << "^";
             }
         }
-        return ss.str();
-    }
+        meta += '\n';
+
+        return Str(meta) + ss.str();
+    } 
 
     Str Exception::summary() const {
         stack<ExceptionLine> st(stacktrace);
