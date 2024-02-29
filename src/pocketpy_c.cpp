@@ -578,11 +578,11 @@ void pkpy_delete_repl(void* repl){
     delete (REPL*)repl;
 }
 
-void pkpy_compile_to_string(pkpy_vm* vm_handle, const char* source, const char* filename, int mode, bool* ok, char** out){
+void pkpy_compile_to_string(pkpy_vm* vm_handle, const char* source, const char* filename, int mode, bool unknown_global_scope, bool* ok, char** out){
     VM* vm = (VM*) vm_handle;
     pkpy_clear_error(vm_handle, NULL);
     try{
-        CodeObject_ code = vm->compile(source, filename, (CompileMode)mode);
+        CodeObject_ code = vm->compile(source, filename, (CompileMode)mode, unknown_global_scope);
         *out = code->serialize(vm).c_str_dup();
         *ok = true;
     }catch(Exception& e){
