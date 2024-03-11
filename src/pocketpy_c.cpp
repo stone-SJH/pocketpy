@@ -88,7 +88,7 @@ static std::string base64_decode(const std::string& in) {
         val = (val << 6) + T[c];
         valb += 6;
         if (valb >= 0) {
-            out.push_back(unsigned char((val >> valb) & 0xFF));
+            out.push_back((unsigned char)((val >> valb) & 0xFF));
             valb -= 8;
         }
     }
