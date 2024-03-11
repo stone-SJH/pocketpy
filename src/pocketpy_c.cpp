@@ -1,7 +1,9 @@
-#ifndef PK_NO_EXPORT_C_API
+﻿#ifndef PK_NO_EXPORT_C_API
 
 #include "pocketpy.h"
 #include "pocketpy_c.h"
+#include <sstream> 
+#include <regex>
 
 using namespace pkpy;
 
@@ -54,6 +56,45 @@ static PyObject* stack_item(VM* vm, int index){
         vm->_c.error = vm->call(e_t, VAR(re.what())); \
         return false; \
     }
+
+static std::string base64_encode(const std::string& in) {
+
+    std::string out;
+
+    int val = 0, valb = -6;
+    for (unsigned char c : in) {
+        val = (val << 8) + c;
+        valb += 8;
+        while (valb >= 0) {
+            out.push_back("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[(val >> valb) & 0x3F]);
+            valb -= 6;
+        }
+    }
+    if (valb > -6) out.push_back("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[((val << 8) >> (valb + 8)) & 0x3F]);
+    while (out.size() % 4) out.push_back('=');
+    return out;
+}
+
+static std::string base64_decode(const std::string& in) {
+
+    std::string out;
+
+    std::vector<int> T(256, -1);
+    for (int i = 0; i < 64; i++) T["ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[i]] = i;
+
+    int val = 0, valb = -8;
+    for (unsigned char c : in) {
+        if (T[c] == -1) break;
+        val = (val << 6) + T[c];
+        valb += 6;
+        if (valb >= 0) {
+            out.push_back(unsigned char((val >> valb) & 0xFF));
+            valb -= 8;
+        }
+    }
+    return out;
+}
+
 
 pkpy_vm* pkpy_new_vm(bool enable_os){
     return (pkpy_vm*)new VM(enable_os);
@@ -578,22 +619,71 @@ void pkpy_delete_repl(void* repl){
     delete (REPL*)repl;
 }
 
-void pkpy_compile_to_string(pkpy_vm* vm_handle, const char* source, const char* filename, int mode, bool unknown_global_scope, bool* ok, char** out){
-    VM* vm = (VM*) vm_handle;
+void replace_all(std::string& str, const std::string& from, const std::string& to) {
+    if (from.empty())
+        return;
+    size_t start_pos = 0;
+    while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+}
+
+void pkpy_compile_to_string(pkpy_vm* vm_handle, const char* source, const char* filename, int mode, bool unknown_global_scope, bool* ok, char** out) {
+    VM* vm = (VM*)vm_handle;
     pkpy_clear_error(vm_handle, NULL);
-    try{
-        CodeObject_ code = vm->compile(source, filename, (CompileMode)mode, unknown_global_scope);
-        *out = code->serialize(vm).c_str_dup();
+
+    try {
+        std::string decoded = base64_decode(source);
+
+        std::vector<std::string> s_20_7f = { " ", "!", "\"", "#", "$", " % ", " & ", "'", "(", ")", "*", "+", ",", "-", ".", "/", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?", "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_", "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~", ""};
+        std::vector<std::string> s_80_ff = {"€", "", "‚", "ƒ", "„", "…", "†", "‡", "ˆ", "‰", "Š", "‹", "Œ", "", "Ž", "", "", "‘", "’", "“", "”", "•", "–", "—", "˜", "™", "š", "›", "œ", "", "ž", "Ÿ", " ", "¡", "¢", "£", "¤", "¥", "¦", "§", "¨", "©", "ª", "«", "¬", "­", "®", "¯", "°", "±", "²", "³", "´", "µ", "¶", "·", "¸", "¹", "º", "»", "¼", "½", "¾", "¿", "À", "Á", "Â", "Ã", "Ä", "Å", "Æ", "Ç", "È", "É", "Ê", "Ë", "Ì", "Í", "Î", "Ï", "Ð", "Ñ", "Ò", "Ó", "Ô", "Õ", "Ö", "×", "Ø", "Ù", "Ú", "Û", "Ü", "Ý", "Þ", "ß", "à", "á", "â", "ã", "ä", "å", "æ", "ç", "è", "é", "ê", "ë", "ì", "í", "î", "ï", "ð", "ñ", "ò", "ó", "ô", "õ", "ö", "÷", "ø", "ù", "ú", "û", "ü", "ý", "þ", "ÿ"};
+
+        std::regex pattern("\\\\x([0-9A-Fa-f]{2})");
+        std::smatch matches;
+        std::vector<std::string> to_replace;
+        
+        std::string tmp = decoded;
+        while (std::regex_search(tmp, matches, pattern)) {
+            for (size_t i = 1; i < matches.size(); ++i) {
+                std::string hex = matches.str(i);
+                to_replace.push_back(hex);
+            }
+            tmp = matches.suffix().str();
+        }
+
+        for (int i = 0; i < to_replace.size(); i++) {
+            std::string hex = to_replace[i];
+            int decimal = std::stoi(hex, nullptr, 16);
+            if (decimal >= 32 && decimal <= 127) {
+                std::string changed = s_20_7f[decimal - 32];
+                replace_all(decoded, "\\x" + hex, changed);
+            }
+            else if (decimal >= 128 && decimal <= 255) {
+                std::string changed = s_80_ff[decimal - 128];
+                replace_all(decoded, "\\x" + hex, changed);
+            }
+        }
+        CodeObject_ code = vm->compile(decoded, filename, (CompileMode)mode, unknown_global_scope);
+        std::string compiled = code->serialize(vm).str();
+        std::string encoded = base64_encode(code->serialize(vm).str());
+        *out = strdup(encoded.c_str());
         *ok = true;
-    }catch(Exception& e){
+    }
+    catch (Exception& e) {
         *ok = false;
-        *out = e.summary().c_str_dup();
-    }catch(std::exception& e){
+        std::string encoded = base64_encode(e.summary().str());
+        *out = strdup(encoded.c_str());
+    }
+    catch (std::exception& e) {
         *ok = false;
-        *out = strdup(e.what());
-    }catch(...){
+        std::string encoded = base64_encode(e.what());
+        *out = strdup(encoded.c_str());
+    }
+    catch (...) {
         *ok = false;
-        *out = strdup("unknown error");
+        std::string encoded = base64_encode("unknown error");
+        *out = strdup(encoded.c_str());
     }
 }
 

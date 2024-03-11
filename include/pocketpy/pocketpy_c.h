@@ -10,6 +10,11 @@ extern "C" {
 
 #include "export.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+
 typedef struct pkpy_vm_handle pkpy_vm;
 typedef int (*pkpy_CFunction)(pkpy_vm*);
 typedef void (*pkpy_COutputHandler)(const char*, int);

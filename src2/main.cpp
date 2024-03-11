@@ -98,10 +98,12 @@ except:
     print('xxx')
 print('done')
 )";
+    const char* src2 = R"(cHJpbnQoYifmtYvor5VceGZmXHhlZScpCg==)";
+
     const char* filename = "pydemo.py";
     char* out;
     bool ok;
-    pkpy_compile_to_string(vm, src, filename, 0, &ok, &out);
+    pkpy_compile_to_string(vm, src2, filename, 0, true, &ok, &out);
 
     pkpy_exec(vm, src);
     //pkpy_compile_to_string(vm, )

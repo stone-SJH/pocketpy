@@ -254,7 +254,7 @@ int utf8len(unsigned char c, bool suppress){
     }
 
     void Str::escape_(SStream& ss, bool single_quote) const {
-        ss << (single_quote ? '\'' : '"');
+        ss << (single_quote ? '\'' : '\"');
         for (int i=0; i<length(); i++) {
             char c = this->operator[](i);
             switch (c) {
@@ -281,7 +281,7 @@ int utf8len(unsigned char c, bool suppress){
                     }
             }
         }
-        ss << (single_quote ? '\'' : '"');
+        ss << (single_quote ? '\'' : '\"');
     }
 
     int Str::index(const Str& sub, int start) const {
