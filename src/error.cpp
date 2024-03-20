@@ -70,7 +70,7 @@ namespace pkpy{
             ss << "    " << line;
             if(cursor && line != "<?>" && cursor >= pair.first && cursor <= pair.second){
                 auto column = cursor - pair.first - removed_spaces;
-                if (external) meta += std::to_string(column);
+                if (external) meta += std::to_string(column + removed_spaces);
                 if(column >= 0) ss << "\n    " << std::string(column, ' ') << "^";
             }
         }
