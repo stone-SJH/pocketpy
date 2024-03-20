@@ -68,10 +68,12 @@ int main(){
     pkpy_setattr(vm, pkpy_name("input"));
 
     const char* src = R"(
-try:
-    print(0,' ', '', exp=' ')
-except ValueError:
-    pass
+a = 1e-2
+print(a)
+b = 1e+3
+print(b)
+c = 1e4
+print(c)
 
 def test(a, b, c = " "):
     try:
@@ -105,7 +107,7 @@ print('done')
     bool ok;
     pkpy_compile_to_string(vm, src2, filename, 0, true, &ok, &out);
 
-    //pkpy_exec(vm, src);
+    pkpy_exec(vm, src);
     //pkpy_compile_to_string(vm, )
     /*
 
