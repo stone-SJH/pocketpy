@@ -99,7 +99,7 @@ struct StrName {
     const char* c_str() const;
     bool empty() const { return index == 0; }
 
-    Str escape() const;
+    Str escape(bool single_quote = true) const;
 
     bool operator==(const StrName& other) const noexcept {
         return this->index == other.index;

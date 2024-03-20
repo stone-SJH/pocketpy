@@ -31,26 +31,29 @@ namespace pkpy{
         return {_start, i};
     }
 
-    Str SourceData::snapshot(int lineno, const char* cursor, std::string_view name) const{
+    Str SourceData::snapshot(int lineno, const char* cursor, std::string_view name, bool external) const{
         SStream ss;
         std::string meta = "";
-        //write filename as string
-        meta += 's';
-        meta += filename.escape(false).str();
-        meta += '\n';
 
-        //write lineno as int
-        meta += 'i';
-        meta += std::to_string(lineno);
-        meta += '\n';
+        if (external) {
+            //write filename as string
+            meta += 's';
+            meta += filename.escape(false).str();
+            meta += '\n';
 
-        //write name as string
-        meta += 's';
-        if (!name.empty()) meta += name;
-        meta += '\n';
+            //write lineno as int
+            meta += 'i';
+            meta += std::to_string(lineno);
+            meta += '\n';
 
-        //write column as int
-        meta += 'i';
+            //write name as string
+            meta += 's';
+            if (!name.empty()) meta += Str(name).escape(false).str();
+            meta += '\n';
+
+            //write column as int
+            meta += 'i';
+        }
 
         ss << "  " << "File \"" << filename << "\", line " << lineno;
         if(!name.empty()) ss << ", in " << name;
@@ -67,11 +70,11 @@ namespace pkpy{
             ss << "    " << line;
             if(cursor && line != "<?>" && cursor >= pair.first && cursor <= pair.second){
                 auto column = cursor - pair.first - removed_spaces;
-                meta += std::to_string(column);
+                if (external) meta += std::to_string(column);
                 if(column >= 0) ss << "\n    " << std::string(column, ' ') << "^";
             }
         }
-        meta += '\n';
+        if (external) meta += '\n';
 
         return Str(meta) + ss.str();
     } 
@@ -87,6 +90,24 @@ namespace pkpy{
         // TODO: allow users to override the behavior
         if (!msg.empty()) ss << type.sv() << ": " << msg;
         else ss << type.sv();
+        return ss.str();
+    }
+
+    Str Exception::summary_external() const {
+        stack<ExceptionLine> st(stacktrace);
+        SStream ss;
+        //write error type
+        ss << 's' << type.escape(false).str() << '\n';
+
+        //write error msg
+        ss << 's';
+        if (!msg.empty()) ss << msg.escape(false).str();
+        ss << '\n';
+
+        while (!st.empty()) {
+            ss << st.top().snapshot_external() << '\n';
+            st.pop();
+        }
         return ss.str();
     }
 

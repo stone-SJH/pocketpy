@@ -421,8 +421,8 @@ int utf8len(unsigned char c, bool suppress){
         return StrName(index);
     }
 
-    Str StrName::escape() const {
-        return Str(sv()).escape();
+    Str StrName::escape(bool single_quote) const {
+        return Str(sv()).escape(single_quote);
     }
 
     bool StrName::is_valid(int index) {

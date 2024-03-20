@@ -672,7 +672,7 @@ void pkpy_compile_to_string(pkpy_vm* vm_handle, const char* source, const char* 
     }
     catch (Exception& e) {
         *ok = false;
-        std::string encoded = base64_encode(e.summary().str());
+        std::string encoded = base64_encode(e.summary_external().str());
         *out = strdup(encoded.c_str());
     }
     catch (std::exception& e) {

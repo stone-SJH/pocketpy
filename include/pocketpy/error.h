@@ -35,7 +35,7 @@ struct SourceData {
     SourceData(std::string_view source, const Str& filename, CompileMode mode);
     SourceData(const Str& filename, CompileMode mode);
     std::pair<const char*,const char*> _get_line(int lineno) const;
-    Str snapshot(int lineno, const char* cursor, std::string_view name) const;
+    Str snapshot(int lineno, const char* cursor, std::string_view name, bool external = false) const;
 };
 
 struct ExceptionLine{
@@ -45,6 +45,7 @@ struct ExceptionLine{
     std::string name;
 
     Str snapshot() const { return src->snapshot(lineno, cursor, name); }
+    Str snapshot_external() const { return src->snapshot(lineno, cursor, name, true); }
 
     ExceptionLine(std::shared_ptr<SourceData> src, int lineno, const char* cursor, std::string_view name):
         src(src), lineno(lineno), cursor(cursor), name(name) {}
@@ -75,6 +76,7 @@ struct Exception {
     }
 
     Str summary() const;
+    Str summary_external() const;
 };
 
 }   // namespace pkpy
