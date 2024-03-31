@@ -12,7 +12,7 @@ typedef uint8_t TokenIndex;
 constexpr const char* kTokens[] = {
     "is not", "not in", "yield from",
     "@eof", "@eol", "@sof",
-    "@id", "@num", "@str", "@fstr", "@long", "@bytes", "@imag",
+    "@id", "@num", "@str", "@fstr", "@cfstr", "@long", "@bytes", "@imag",
     "@indent", "@dedent",
     /*****************************************/
     "+", "+=", "-", "-=",   // (INPLACE_OP - 1) can get '=' removed
@@ -121,7 +121,8 @@ struct Lexer {
     bool matchchar(char c);
     void add_token(TokenIndex type, TokenValue value={});
     void add_token_2(char c, TokenIndex one, TokenIndex two);
-    Str eat_string_until(char quote, bool raw);
+    std::vector<char> eat_string_until(char quote, bool raw);
+    std::vector<char> eat_bracket(char l, char r);
     void eat_string(char quote, StringType type);
 
     void eat_number();

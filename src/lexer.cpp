@@ -202,7 +202,42 @@ static bool is_unicode_Lo_char(uint32_t c) {
         else add_token(one);
     }
 
-    Str Lexer::eat_string_until(char quote, bool raw) {
+    std::vector<char> Lexer::eat_bracket(char l, char r) {
+        std::vector<char> buff;
+        buff.push_back(l);
+        int depth = 0;
+        while (true) {
+            char c = eatchar_include_newline();
+            if (c == l) {
+                depth++;
+                buff.push_back(c);
+                continue;
+            }
+            if (c == r) {
+                if (depth == 0) {
+                    buff.push_back(c);
+                    break;
+                }
+                else {
+                    buff.push_back(c);
+                    depth--;
+                    continue;
+                }
+            }
+            if (c == '\'' || c == '"') {
+                buff.push_back(c);
+                std::vector<char> str = eat_string_until(c, true);
+                buff.insert(buff.end(), str.begin(), str.end());
+                buff.push_back(c);
+                continue;
+            }
+
+            buff.push_back(c);
+        }
+        return buff;
+    }
+
+    std::vector<char> Lexer::eat_string_until(char quote, bool raw) {
         bool quote3 = match_n_chars(2, quote);
         std::vector<char> buff;
         while (true) {
@@ -254,11 +289,13 @@ static bool is_unicode_Lo_char(uint32_t c) {
                 buff.push_back(c);
             }
         }
-        return Str(buff.data(), buff.size());
+        return buff;
+        //return Str(buff.data(), buff.size());
     }
 
     void Lexer::eat_string(char quote, StringType type) {
-        Str s = eat_string_until(quote, type == RAW_STRING);
+        std::vector<char> buff = eat_string_until(quote, type == RAW_STRING);
+        Str s = Str(buff.data(), buff.size());
         if(type == F_STRING){
             add_token(TK("@fstr"), s);
             return;
@@ -267,7 +304,80 @@ static bool is_unicode_Lo_char(uint32_t c) {
             add_token(TK("@bytes"), s);
             return;
         }
-        add_token(TK("@str"), s);
+        else {
+            //%-formatting
+            int space = eat_spaces();
+            if (matchchar('%')) {
+
+                //'%sxxs123%s%d%.1f'%(...), eat until next ) of the same level
+                if (matchchar('(')) {
+                    std::vector<char> buff = eat_bracket('(', ')');
+                    Str header = Str(std::to_string(s.length()) + "|");
+                    Str ss = header + s + Str(buff.data(), buff.size());
+                    add_token(TK("@cfstr"), ss);
+                }
+                else if (matchchar('[')) {
+                    std::vector<char> buff = eat_bracket('[', ']');
+                    Str header = Str(std::to_string(s.length()) + "|");
+                    Str ss = header + s + Str(buff.data(), buff.size());
+                    add_token(TK("@cfstr"), ss);
+                }
+                else if (matchchar('{')) {
+                    std::vector<char> buff = eat_bracket('{', '}');
+                    Str header = Str(std::to_string(s.length()) + "|");
+                    Str ss = header + s + Str(buff.data(), buff.size());
+                    add_token(TK("@cfstr"), ss);
+                }
+                //'%s'%x, eat name
+                else {
+                    const char* start = curr_char;
+                    while (true) {
+                        unsigned char c = peekchar();
+                        int u8bytes = utf8len(c, true);
+                        if (u8bytes == 0) 
+                            SyntaxError("Invalid char: " + std::string(1, c));
+                        if (u8bytes == 1) {
+                            if (isalpha(c) || c == '_' || isdigit(c)) {
+                                curr_char++;
+                                continue;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        // handle multibyte char
+                        std::string u8str(curr_char, u8bytes);
+                        if (u8str.size() != u8bytes) 
+                            SyntaxError("invalid utf8 sequence: " + std::string(1, c));
+                        uint32_t value = 0;
+                        for (int k = 0; k < u8bytes; k++) {
+                            uint8_t b = u8str[k];
+                            if (k == 0) {
+                                if (u8bytes == 2) value = (b & 0b00011111) << 6;
+                                else if (u8bytes == 3) value = (b & 0b00001111) << 12;
+                                else if (u8bytes == 4) value = (b & 0b00000111) << 18;
+                            }
+                            else {
+                                value |= (b & 0b00111111) << (6 * (u8bytes - k - 1));
+                            }
+                        }
+                        if (is_unicode_Lo_char(value)) curr_char += u8bytes;
+                        else break;
+                    }
+                    int length = (int)(curr_char - start);
+                    if (length == 0) 
+                        SyntaxError("@id contains invalid char");
+                    std::string_view name(start, length);
+                    Str header = Str(std::to_string(s.length()) + "|");
+                    Str ss = header + s + Str(name.data(), name.size());
+                    add_token(TK("@cfstr"), ss);
+                }
+            }
+            else {
+                //raw string
+                add_token(TK("@str"), s);
+            }
+        }
     }
 
     void Lexer::eat_number() {

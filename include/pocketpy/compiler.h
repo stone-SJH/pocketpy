@@ -90,6 +90,7 @@ class Compiler {
     void exprImag();
     void exprBytes();
     void exprFString();
+    void exprCFString();
     void exprLambda();
     void exprOr();
     void exprAnd();

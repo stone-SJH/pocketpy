@@ -266,6 +266,13 @@ struct FStringExpr: Expr{
     void emit_(CodeEmitContext* ctx) override;
 };
 
+struct CFStringExpr : Expr {
+    Str src;
+    CFStringExpr(const Str& src) : src(src) {}
+    void _load_simple_expr(CodeEmitContext* ctx, Str expr);
+    void emit_(CodeEmitContext* ctx) override;
+};
+
 struct SubscrExpr: Expr{
     Expr_ a;
     Expr_ b;

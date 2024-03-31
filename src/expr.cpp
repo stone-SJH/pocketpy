@@ -510,6 +510,61 @@ namespace pkpy{
         ctx->emit_(OP_BUILD_STRING, count, line);
     }
 
+    void CFStringExpr::_load_simple_expr(CodeEmitContext* ctx, Str expr) {
+        bool repr = false;
+        if (expr.size >= 2 && expr.end()[-2] == '!') {
+            switch (expr.end()[-1]) {
+            case 'r': repr = true; expr = expr.substr(0, expr.size - 2); break;
+            case 's': repr = false; expr = expr.substr(0, expr.size - 2); break;
+            default: break;     // nothing happens
+            }
+        }
+        // name or name.name
+        bool is_fastpath = false;
+        if (is_identifier(expr.sv())) {
+            ctx->emit_(OP_LOAD_NAME, StrName(expr.sv()).index, line);
+            is_fastpath = true;
+        }
+        else {
+            int dot = expr.index(".");
+            if (dot > 0) {
+                std::string_view a = expr.sv().substr(0, dot);
+                std::string_view b = expr.sv().substr(dot + 1);
+                if (is_identifier(a) && is_identifier(b)) {
+                    ctx->emit_(OP_LOAD_NAME, StrName(a).index, line);
+                    ctx->emit_(OP_LOAD_ATTR, StrName(b).index, line);
+                    is_fastpath = true;
+                }
+            }
+        }
+
+        if (!is_fastpath) {
+            int index = ctx->add_const_string(expr.sv());
+            ctx->emit_(OP_FSTRING_EVAL, index, line);
+        }
+
+        if (repr) {
+            ctx->emit_(OP_REPR, BC_NOARG, line);
+        }
+    }
+
+    void CFStringExpr::emit_(CodeEmitContext* ctx) {
+        int count = 0;
+
+        std::vector<std::string_view> subs = src.split('|');
+        int length = std::stoi(subs[0].data());
+        Str first = src.substr(subs[0].size() + 1, length);
+        Str second = src.substr(subs[0].size() + 1 + length, src.size - (subs[0].size() + 1 + length));
+
+        ctx->emit_(OP_LOAD_CONST, ctx->add_const_string(first.sv()), line);
+        count++;
+
+        //% expr
+        _load_simple_expr(ctx, second);
+        count++;
+
+        ctx->emit_(OP_BUILD_CSTRING, count, line);
+    }
 
     void SubscrExpr::emit_(CodeEmitContext* ctx){
         a->emit_(ctx);

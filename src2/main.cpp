@@ -101,13 +101,25 @@ except:
 print('done')
 )";
     const char* src2 = R"(YSA9IGInXHgyMFx4MjFceDIyXHgyM1x4MjRceDI1XHgyNlx4MjdceDI4XHgyOVx4MmFceDJiXHgyY1x4MmRceDJlXHgyZlx4MzBceDMxXHgzMlx4MzNceDM0XHgzNVx4MzZceDM3XHgzOFx4MzlceDNhXHgzYlx4M2NceDNkXHgzZVx4M2ZceDQwXHg0MVx4NDJceDQzXHg0NFx4NDVceDQ2XHg0N1x4NDhceDQ5XHg0YVx4NGJceDRjXHg0ZFx4NGVceDRmXHg1MFx4NTFceDUyXHg1M1x4NTRceDU1XHg1Nlx4NTdceDU4XHg1OVx4NWFceDViXHg1Y1x4NWRceDVlXHg1Zlx4NjBceDYxXHg2Mlx4NjNceDY0XHg2NVx4NjZceDY3XHg2OFx4NjlceDZhXHg2Ylx4NmNceDZkXHg2ZVx4NmZceDcwXHg3MVx4NzJceDczXHg3NFx4NzVceDc2XHg3N1x4NzhceDc5XHg3YVx4N2JceDdjXHg3ZFx4N2VceDdmXHg4MFx4ODFceDgyXHg4M1x4ODRceDg1XHg4Nlx4ODdceDg4XHg4OVx4OGFceDhiXHg4Y1x4OGRceDhlXHg4Zlx4OTBceDkxXHg5Mlx4OTNceDk0XHg5NVx4OTZceDk3XHg5OFx4OTlceDlhXHg5Ylx4OWNceDlkXHg5ZVx4OWZceGEwXHhhMVx4YTJceGEzXHhhNFx4YTVceGE2XHhhN1x4YThceGE5XHhhYVx4YWJceGFjXHhhZFx4YWVceGFmXHhiMFx4YjFceGIyXHhiM1x4YjRceGI1XHhiNlx4YjdceGI4XHhiOVx4YmFceGJiXHhiY1x4YmRceGJlXHhiZlx4YzBceGMxXHhjMlx4YzNceGM0XHhjNVx4YzZceGM3XHhjOFx4YzlceGNhXHhjYlx4Y2NceGNkXHhjZVx4Y2ZceGQwXHhkMVx4ZDJceGQzXHhkNFx4ZDVceGQ2XHhkN1x4ZDhceGQ5XHhkYVx4ZGJceGRjXHhkZFx4ZGVceGRmXHhlMFx4ZTFceGUyXHhlM1x4ZTRceGU1XHhlNlx4ZTdceGU4XHhlOVx4ZWFceGViXHhlY1x4ZWRceGVlXHhlZlx4ZjBceGYxXHhmMlx4ZjNceGY0XHhmNVx4ZjZceGY3XHhmOFx4ZjlceGZhXHhmYlx4ZmNceGZkXHhmZVx4ZmYnCg==)";
+    const char* src3 = R"(
+x = "lily"
+y = 16
+z = 163.5
 
+#s = f"{x+'{'+ '}' + '{x}'}, {y+y}, {z+z}"
+#print(s)
+d = "%s, %d, %.1f"   %[(x, y), z]
+d = "%s, %d, %.1f"   %{('332)', y, z}
+#s = '%sssss'%x
+#s = '%sxx321321xx'%xxx23
+#s = '%sxxx5azzf_%$#@^%$+@^$#@+_321x||#@|£¡#|@£¡|£¤£¡@|£¤|£¡@'%xxx23+'11'
+)";
     const char* filename = "pydemo.py";
     char* out;
     bool ok;
-    pkpy_compile_to_string(vm, src2, filename, 0, true, &ok, &out);
+    //pkpy_compile_to_string(vm, src2, filename, 0, true, &ok, &out);
 
-    pkpy_exec(vm, src);
+    pkpy_exec(vm, src3);
     //pkpy_compile_to_string(vm, )
     /*
 
