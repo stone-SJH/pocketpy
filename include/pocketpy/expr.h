@@ -36,6 +36,8 @@ struct Expr{
         PK_UNUSED(ctx);
         return false;
     }
+
+    void _load_simple_expr(CodeEmitContext* ctx, Str expr);
 };
 
 struct CodeEmitContext{
@@ -262,14 +264,12 @@ struct LambdaExpr: Expr{
 struct FStringExpr: Expr{
     Str src;
     FStringExpr(const Str& src): src(src) {}
-    void _load_simple_expr(CodeEmitContext* ctx, Str expr);
     void emit_(CodeEmitContext* ctx) override;
 };
 
 struct CFStringExpr : Expr {
     Str src;
     CFStringExpr(const Str& src) : src(src) {}
-    void _load_simple_expr(CodeEmitContext* ctx, Str expr);
     void emit_(CodeEmitContext* ctx) override;
 };
 
