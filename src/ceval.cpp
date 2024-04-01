@@ -335,6 +335,10 @@ __NEXT_STEP:;
         STACK_SHRINK(byte.arg);
         PUSH(VAR(ss.str()));
     } DISPATCH();
+    TARGET(BUILD_CSTRING) {
+        vm->NotImplementedError();
+        PUSH(vm->None);
+    } DISPATCH();
     /*****************************************/
     TARGET(BUILD_TUPLE_UNPACK) {
         auto _lock = heap.gc_scope_lock();
