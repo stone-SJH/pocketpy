@@ -1,0 +1,12 @@
+import random
+
+def shuffle(container):
+    for index in range(len(container) - 1, 0, -1):
+        other = random.randint(0, index)
+        if other == index:
+            continue
+        container[index], container[other] = container[other], container[index]
+        
+def choice(container):
+    index = random.randint(0, len(container))
+    return container[index]

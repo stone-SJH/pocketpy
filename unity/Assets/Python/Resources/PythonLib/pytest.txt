@@ -1,0 +1,2341 @@
+﻿a = ("a", "b", "c", "d", "e", "f", "g", "h")
+x = slice(0, -1, 2)
+assert a[x] == ('a', 'c', 'e', 'g')
+
+x= slice(None, None, None)
+assert a[x] == ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
+
+x = slice(None, None, 0)
+try:
+    print(a[x])
+except ValueError:
+    pass
+
+x = slice(None, None, -1)
+assert a[x] == ('h', 'g', 'f', 'e', 'd', 'c', 'b', 'a')
+
+x = slice(None, 1, None)
+assert a[x] == ('a',)
+
+x1 = slice(1)
+assert x == x1
+assert a[x1] == ('a',)
+
+x = slice(0, 3, None)
+assert a[x] == ('a', 'b', 'c')
+x2 = slice(0, 3)
+assert x == x2
+assert a[x2] == ('a', 'b', 'c')
+
+print('26_slice passed.')
+# test type hints
+
+def f(x: int) -> int:
+    return x + 1
+
+def g(x: int, y: int) -> int:
+    return x + y
+
+def h(x: int, y):
+    return x + y
+
+def i(x, y: int):
+    return x + y
+
+# test type hints with default values
+
+def f(x: int = 1) -> int:
+    return x + 1
+
+def g(x: int = 1, y: int = 2) -> int:
+    return x + y
+
+def h(x: int = 1, y = 2):
+    return x + y
+
+def i(x = 1, y: int = 2):
+    return x + y
+
+# test type hints with *args
+
+def f(x: int, *args) -> int:
+    return x + len(args)
+
+def g(x: int, y: int, *args) -> int:
+    return x + y + len(args)
+
+def h(x: int, y, *args):
+    return x + y + len(args)
+
+def i(x, y: int, *args):
+    return x + y + len(args)
+
+def j(x, y: int, *args: str) -> int:
+    return x + y + len(args)
+
+x: int = 1
+y: 'str' = '2'
+
+x: 'list[int]' = [1, 2, 3]
+y: 'list[str]' = ['1', '2', '3']
+
+def g(x: 'list[int]', y: 'list[str]') -> 'list[int]':
+    return x + y
+
+def z(x: float):
+    x: int = 1
+    y: 'str' = '2'
+
+
+print('15_typehints passed.')
+
+a = {1, 2, 3}
+a |= {2, 3, 4}
+
+assert a == {1, 2, 3, 4}
+
+a = {1, 2, 3}
+a &= {2, 3, 4}
+
+assert a == {2, 3}
+
+a = {1, 2, 3}
+a ^= {2, 3, 4}
+
+assert a == {1, 4}
+
+a = {1, 2, 3}
+a -= {2, 3, 4}
+
+assert a == {1}
+
+a = {1, 2, 3}
+a |= {2, 3, 4}
+
+assert a == {1, 2, 3, 4}
+
+a = set([1, 2, 3])
+a |= set([2, 3, 4])
+
+assert a == {1, 2, 3, 4}
+
+a.add(5)
+assert a == {1, 2, 3, 4, 5}
+
+a.remove(5)
+assert a == {1, 2, 3, 4}
+
+a.discard(4)
+assert a == {1, 2, 3}
+
+a.discard(4)
+assert a == {1, 2, 3}
+
+assert a.union({2, 3, 4}) == {1, 2, 3, 4}
+assert a.intersection({2, 3, 4}) == {2, 3}
+assert a.difference({2, 3, 4}) == {1}
+assert a.symmetric_difference({2, 3, 4}) == {1, 4}
+
+assert a | {2, 3, 4} == {1, 2, 3, 4}
+assert a & {2, 3, 4} == {2, 3}
+assert a - {2, 3, 4} == {1}
+assert a ^ {2, 3, 4} == {1, 4}
+
+a.update({2, 3, 4})
+assert a == {1, 2, 3, 4}
+
+assert 3 in a
+assert 5 not in a
+
+assert len(a) == 4
+a.clear()
+
+assert len(a) == 0
+assert a == set()
+
+b = {1, 2, 3}
+c = b.copy()
+
+assert b == c
+assert b is not c
+b.add(4)
+assert b == {1, 2, 3, 4}
+assert c == {1, 2, 3}
+
+assert type({}) is dict
+
+assert {1,2}.issubset({1,2,3})
+assert {1,2,3}.issuperset({1,2})
+assert {1,2,3}.isdisjoint({4,5,6})
+assert not {1,2,3}.isdisjoint({2,3,4})
+
+# unpacking builder
+a = {1, 2, 3}
+b = {*a, 4, 5, *a, *a}
+assert b == {1, 2, 3, 4, 5}
+
+a = set()
+b = {*a, 1, 2, 3, *a, *a}
+assert b == {1, 2, 3}
+
+print('11_set passed.')
+
+# test int literals
+assert 0xffff == 65535
+assert 0xAAFFFF == 11206655
+assert 0x7fffffff == 2147483647
+assert -0xffff == -65535
+assert -0xAAFFFF == -11206655
+assert -0x7fffffff == -2147483647
+
+# test oct literals
+assert 0o1234 == 668
+assert 0o17777777777 == 2147483647
+assert -0o1234 == -668
+assert -0o17777777777 == -2147483647
+
+# test binary literals
+assert 0b10010 == 18
+assert -0b10010 == -18
+assert -0b11111 == -31
+
+# test == != >= <= < >
+assert -1 == -1
+assert -1 != 65535
+assert -1 != 1
+assert -1 >= -1
+assert -1 <= -1
+assert -1 < 1
+assert -1 > -2
+
+# test + - * % ** //
+assert -1 + 1 == 0
+assert -1 - 1 == -2
+assert 4 * -1 == -4
+assert 5 % 2 == 1
+assert 2 ** 3 == 8
+assert 4 // 2 == 2
+assert 5 // 2 == 2
+
+# test += -= *= //=
+x = 3
+x += 1
+assert x == 4
+x -= 1
+assert x == 3
+x *= 2
+assert x == 6
+x //= 2
+assert x == 3
+
+# test __str__, __repr__
+assert str(1) == '1'
+assert repr(1) == '1'
+
+# test int()
+assert int(1) == 1
+assert int(1.0) == 1
+assert int(1.1) == 1
+assert int(1.9) == 1
+assert int(-1.9) == -1
+assert int(1.5) == 1
+assert int(-1.5) == -1
+assert int("123") == 123
+
+# test >> << & | ^
+assert 12 >> 1 == 6
+assert 12 << 1 == 24
+assert 12 & 1 == 0
+assert 12 | 1 == 13
+assert 12 ^ 1 == 13
+
+# test high precision int pow
+assert 4**13 == 67108864
+assert (-4)**13 == -67108864
+
+# test __invert__
+assert ~3 == -4
+assert ~-3 == 2
+assert ~0 == -1
+
+assert not 1 < 2 > 3
+
+try:
+    1 // 0
+except ZeroDivisionError:
+    pass
+
+try:
+    1 % 0
+except ZeroDivisionError:
+    pass
+
+# test inc dec
+a = 1
+
+++a
+assert a == 2
+++a; ++a; --a;
+assert a == 3
+
+def f(a):
+    ++a
+    ++a
+    --a
+    return a
+
+assert f(3) == 4
+assert f(-2) == -1
+
+print('01_int passed.')
+
+def fab(max):
+    n, a, b = 0, 0, 1
+    while n < max:
+        yield b
+        a, b = b, a + b
+        n = n + 1
+
+a = [i for i in fab(5)]
+assert a == [1,1,2,3,5]
+
+def f(n):
+    for i in range(n):
+        yield i
+
+x = 0
+for j in f(5):
+    x += j
+
+assert x == 10
+
+a = [i for i in f(6)]
+
+assert a == [0,1,2,3,4,5]
+
+def f(n):
+    for i in range(n):
+        for j in range(n):
+            yield i, j
+
+a = [i for i in f(3)]
+assert len(a) == 9
+assert a[0] == (0,0)
+assert a[1] == (0,1)
+assert a[2] == (0,2)
+assert a[3] == (1,0)
+assert a[4] == (1,1)
+assert a[5] == (1,2)
+assert a[6] == (2,0)
+assert a[7] == (2,1)
+assert a[8] == (2,2)
+
+def g():
+    yield from [1, 2, 3]
+
+def f():
+    yield from g()
+
+a = [i for i in f()]
+assert a == [1, 2, 3]
+
+def f(n):
+    for i in range(n):
+        yield i
+        for j in range(i):
+            yield j
+
+t = f(3)
+assert list(t) == [0, 1, 0, 2, 0, 1]
+
+def f(n):
+    for i in range(n):
+        if i == n-1:
+            raise ValueError
+        yield i
+
+t = f(3)
+t = iter(t)
+assert next(t) == 0
+assert next(t) == 1
+
+try:
+    next(t)
+    exit(1)
+except ValueError:
+    pass
+
+assert next(t) == StopIteration
+
+
+def f():
+    yield 1
+    yield 2
+    return
+    yield 3
+
+assert list(f()) == [1, 2]
+
+print('23_yield passed.')
+
+a = [1, 2, 3]
+a.append(a)
+a.append([a])
+assert repr(a) == '[1, 2, 3, [...], [[...]]]'
+
+b = [1]
+b.append(a)
+assert repr(b) == '[1, [1, 2, 3, [...], [[...]]]]'
+b.append(a)
+a.append(b)
+b.append([a])
+print(a)
+assert repr(a) == '[1, 2, 3, [...], [[...]], [1, [...], [...], [[...]]]]'
+assert repr(b) == '[1, [1, 2, 3, [...], [[...]], [...]], [1, 2, 3, [...], [[...]], [...]], [[1, 2, 3, [...], [[...]], [...]]]]'
+
+a.append([b])
+b.append([a])
+assert repr(a) == '[1, 2, 3, [...], [[...]], [1, [...], [...], [[...]], [[...]]], [[1, [...], [...], [[...]], [[...]]]]]'
+assert repr(b) == '[1, [1, 2, 3, [...], [[...]], [...], [[...]]], [1, 2, 3, [...], [[...]], [...], [[...]]], [[1, 2, 3, [...], [[...]], [...], [[...]]]], [[1, 2, 3, [...], [[...]], [...], [[...]]]]]'
+
+def eq(a, b):
+    dt = a - b
+    return dt > -0.001 and dt < 0.001
+
+# test == != >= <= < >
+assert 1.0 == 1.0
+assert 1.0 != 1.1
+assert 1.0 >= 1.0
+assert 1.0 <= 1.0
+assert 1.0 < 1.1
+assert 1 < 1.1
+assert 1.1 > 1.0
+assert 1.1 > 1
+
+# test + - * ** /
+assert eq(1.5 + 3, 4.5)
+assert eq(1.5 + 3.9, 5.4)
+assert eq(5.3 - 2.5, 2.8)
+assert eq(0.2**2, 0.04)
+assert eq(4**(-1.0), 0.25)
+assert eq(2/1, 2.0)
+assert eq(3/2.0, 1.5)
+assert eq(1/9, 0.11111)
+
+
+# test += -= *= /=
+x = 3.0
+x += 1
+assert eq(x, 4.0)
+x -= 1
+assert eq(x, 3.0)
+x *= 2
+assert eq(x, 6.0)
+x /= 1.8
+assert eq(x, 3.3333)
+
+
+# test __str__, __repr__
+assert str(1.0) == '1.0'
+assert repr(1.0) == '1.0'
+
+# test float()
+assert eq(float(1), 1.0)
+assert eq(float(1.0), 1.0)
+assert eq(float(1.1), 1.1)
+assert eq(float(1.9), 1.9)
+assert eq(float(-1.9), -1.9)
+assert eq(float(1.5), 1.5)
+assert eq(float(-1.5), -1.5)
+assert eq(float("123"), 123.0)
+assert eq(float("123.456"), 123.456)
+
+import math
+inf = math.inf
+
+assert 1/0 == inf
+assert -1/0 == -inf
+assert 1/inf == 0
+assert -1/inf == 0
+
+# test .123 forms
+assert float(".123") == 0.123
+
+assert .123 == 0.123
+
+assert eq(.5 *2, 1.0)
+assert eq(2 * .5, 1.0)
+assert eq(2 * (.5), 1.0)
+assert eq(2 * (.5 + 1), 3.0)
+
+assert 1e3 == 1000.0
+assert 1e-3 == 0.001
+assert -1e3 == -1000.0
+assert -1e-3 == -0.001
+assert 1e0 == 1.0
+assert 1e-0 == 1.0
+
+assert 2e3 == 2000.0
+assert -2e-3 == -0.002
+
+assert 3.4e-3 == 0.0034
+assert 3.4e+3 == 3400.0
+
+#TODO: support complex number
+#assert 2e3j == 2000j
+#assert -2e-3j == -0.002j
+
+print("02_float passed.")
+
+ok = False
+try:
+    eval('1+')
+except SyntaxError as e:
+    assert type(e) is SyntaxError
+    ok = True
+assert ok
+
+assert eval('1+1') == 2
+assert eval('[1,2,3]') == [1,2,3]
+
+def f(x):
+    return eval('x')
+
+assert f(1) == 1
+
+
+a = 0
+assert eval('a') == 0
+
+exec('a = 1')
+assert a == 1
+
+def f(a):
+    exec('a = 3')
+    return a
+
+assert f(2) == 3
+
+exec(
+    "exec('a = eval(\"3 + 5\")')"
+)
+assert a == 8
+
+def f():
+    b = 1
+    exec(
+        "exec('b = eval(\"3 + 5\")')"
+    )
+    assert b == 8
+print ('24_eval_exec passed.')
+
+a = '12345'
+assert a.encode() == b'12345'
+
+assert b'\xff\xee' != b'1234'
+assert b'\xff\xee' == b'\xff\xee'
+
+a = '测试123'
+assert a == a.encode().decode()
+
+try:
+    a = b'测试'
+    assert False
+except SyntaxError:
+    pass
+
+a = '测试\xff\xee'
+assert a == '测试ÿî'
+assert a == a.encode().decode()
+
+a = 'ÿî'
+assert a.encode() == b'\xc3\xbf\xc3\xae'
+
+assert '\xff\xee' != '\xff\xef'
+assert b'\xff\xee' != b'\xff\xef'
+
+assert '\xff\xee' != b'\xff\xee'
+
+a1 = '\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3a\x3b\x3c\x3d\x3e\x3f\x40\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x5b\x5c\x5d\x5e\x5f\x60\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6a\x6b\x6c\x6d\x6e\x6f\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7a\x7b\x7c\x7d\x7e'
+assert a1.encode() == b' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
+assert a1.encode().decode() == a1
+
+# cpython does not encode [\x7f - \xa0], but we do.
+# Therefore, the characters in the range \x7f - \xa0 behave differently from what they behave in cpython
+a2 = '\x7f\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f\xa0\xa1\xa2\xa3\xa4\xa5\xa6\xa7\xa8\xa9\xaa\xab\xac\xad\xae\xaf'
+assert a2.encode() == b'\x7f\xe2\x82\xac\xc2\x81\xe2\x80\x9a\xc6\x92\xe2\x80\x9e\xe2\x80\xa6\xe2\x80\xa0\xe2\x80\xa1\xcb\x86\xe2\x80\xb0\xc5\xa0\xe2\x80\xb9\xc5\x92\xc2\x8d\xc5\xbd\xc2\x8f\xc2\x90\xe2\x80\x98\xe2\x80\x99\xe2\x80\x9c\xe2\x80\x9d\xe2\x80\xa2\xe2\x80\x93\xe2\x80\x94\xcb\x9c\xe2\x84\xa2\xc5\xa1\xe2\x80\xba\xc5\x93\xc2\x9d\xc5\xbe\xc5\xb8\xc2\xa0\xc2\xa1\xc2\xa2\xc2\xa3\xc2\xa4\xc2\xa5\xc2\xa6\xc2\xa7\xc2\xa8\xc2\xa9\xc2\xaa\xc2\xab\xc2\xac\xc2\xad\xc2\xae\xc2\xaf'
+assert a2.encode().decode() == a2
+
+a3 = '\xa1\xa2\xa3\xa4\xa5\xa6\xa7\xa8\xa9\xaa\xab\xac\xad\xae\xaf\xb0\xb1\xb2\xb3\xb4\xb5\xb6\xb7\xb8\xb9\xba\xbb\xbc\xbd\xbe\xbf\xc0\xc1\xc2\xc3\xc4\xc5\xc6\xc7\xc8\xc9\xca\xcb\xcc\xcd\xce\xcf\xd0\xd1\xd2\xd3\xd4\xd5\xd6\xd7\xd8\xd9\xda\xdb\xdc\xdd\xde\xdf\xe0\xe1\xe2\xe3\xe4\xe5\xe6\xe7\xe8\xe9\xea\xeb\xec\xed\xee\xef\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xff'
+assert a3.encode() == b'\xc2\xa1\xc2\xa2\xc2\xa3\xc2\xa4\xc2\xa5\xc2\xa6\xc2\xa7\xc2\xa8\xc2\xa9\xc2\xaa\xc2\xab\xc2\xac\xc2\xad\xc2\xae\xc2\xaf\xc2\xb0\xc2\xb1\xc2\xb2\xc2\xb3\xc2\xb4\xc2\xb5\xc2\xb6\xc2\xb7\xc2\xb8\xc2\xb9\xc2\xba\xc2\xbb\xc2\xbc\xc2\xbd\xc2\xbe\xc2\xbf\xc3\x80\xc3\x81\xc3\x82\xc3\x83\xc3\x84\xc3\x85\xc3\x86\xc3\x87\xc3\x88\xc3\x89\xc3\x8a\xc3\x8b\xc3\x8c\xc3\x8d\xc3\x8e\xc3\x8f\xc3\x90\xc3\x91\xc3\x92\xc3\x93\xc3\x94\xc3\x95\xc3\x96\xc3\x97\xc3\x98\xc3\x99\xc3\x9a\xc3\x9b\xc3\x9c\xc3\x9d\xc3\x9e\xc3\x9f\xc3\xa0\xc3\xa1\xc3\xa2\xc3\xa3\xc3\xa4\xc3\xa5\xc3\xa6\xc3\xa7\xc3\xa8\xc3\xa9\xc3\xaa\xc3\xab\xc3\xac\xc3\xad\xc3\xae\xc3\xaf\xc3\xb0\xc3\xb1\xc3\xb2\xc3\xb3\xc3\xb4\xc3\xb5\xc3\xb6\xc3\xb7\xc3\xb8\xc3\xb9\xc3\xba\xc3\xbb\xc3\xbc\xc3\xbd\xc3\xbe\xc3\xbf'
+assert a3.encode().decode() == a3
+
+a = '1\n\n2'
+assert a.encode() == b'1\x0a\x0a2'
+assert a.encode().decode() == a
+
+a = '测试\xff\xee'
+assert a.encode() == b'\xe6\xb5\x8b\xe8\xaf\x95\xc3\xbf\xc3\xae'
+
+print('25_bytes passed.')
+
+
+print(1, 2, '3232', '1111', 3.3, sep = None, end = None)
+print(None)
+print(None, 'Test', None, end = None)
+
+def A27t(a, kw1 = 30):
+    return a + kw1
+
+assert A27t(10) == 40
+assert A27t(10, kw1 = 20) == 30
+assert A27t(10, kw1 = None) == 40
+try:
+    r = A27t(None)
+    assert False
+except TypeError:
+    pass
+
+assert None.__repr__() == 'None'
+assert None.__str__() == 'None'
+assert repr(None.__repr__).startswith('<method-wrapper \'__repr__\' of NoneType')
+assert repr(None.__str__).startswith('<method-wrapper \'__str__\' of NoneType')
+
+try:
+    a = None()
+except TypeError:
+    pass
+
+a = None
+assert a.__eq__(None)
+assert a.__eq__(1) == NotImplemented
+assert a.__eq__(1.0) == NotImplemented
+assert a.__eq__('fff') == NotImplemented
+
+assert 1 == None is False
+assert None == None
+assert None is None
+
+print('27_None passed.')
+
+assert round(23.2) == 23
+assert round(23.8) == 24
+assert round(-23.2) == -23
+assert round(-23.8) == -24
+# round with precision
+assert round(23.2, 1) == 23.2
+assert round(23.8, 1) == 23.8
+assert round(-23.2, 1) == -23.2
+assert round(-23.8, 1) == -23.8
+assert round(3.14159, 4) == 3.1416
+assert round(3.14159, 3) == 3.142
+assert round(3.14159, 2) == 3.14
+assert round(3.14159, 1) == 3.1
+assert round(3.14159, 0) == 3
+assert round(-3.14159, 4) == -3.1416
+assert round(-3.14159, 3) == -3.142
+assert round(-3.14159, 2) == -3.14
+assert round(-3.14159, 1) == -3.1
+assert round(-3.14159, 0) == -3
+
+a = [1,2,3,-1]
+assert sorted(a) == [-1,1,2,3]
+assert sorted(a, reverse=True) == [3,2,1,-1]
+
+assert abs(0) == 0
+assert abs(1.0) == 1.0
+assert abs(-1.0) == 1.0
+assert abs(1) == 1
+assert abs(-1) == 1
+
+assert any([1])
+assert any([1,False,True])
+assert not any([])
+assert not any([False])
+
+assert all([])
+assert all([True])
+assert all([True, 1])
+assert not all([False])
+assert not all([True, False])
+assert not all([False, False])
+
+try:
+    print(0," ", "", exp=" ")
+except TypeError:
+    pass
+
+print('0\n\b1', 'aaaa', sep=',', end='')
+print('0\n\b1', 'aaaa', end='')
+print('0\n\b1', 'aaaa', sep='\n')
+
+assert list(enumerate([1,2,3])) == [(0,1), (1,2), (2,3)]
+assert list(enumerate([1,2,3], 1)) == [(1,1), (2,2), (3,3)]
+
+
+print('06_builtin passed.')
+
+# generate assert test for list
+
+assert [1, 2, 3] == [1, 2, 3]
+assert [1, 2, 3] != [1, 2, 4]
+
+# test + *=
+assert [1, 2, 3] + [4, 5, 6] == [1, 2, 3, 4, 5, 6]
+assert [1, 2, 3] * 3 == [1, 2, 3, 1, 2, 3, 1, 2, 3]
+
+l = [1,2,3,4]
+assert l[2] == 3
+assert l[-1] == 4
+assert l[:32] == [1,2,3,4]
+assert l[32:] == []
+assert l[1:4] == [2,3,4]
+assert l[-1:-3] == []
+assert l[-3:-1] == [2,3]
+
+l = (1,2,3,4)
+assert l[2] == 3
+assert l[-1] == 4
+assert l[:32] == (1,2,3,4)
+assert l[32:] == tuple([])
+assert l[1:4] == (2,3,4)
+assert l[-1:-3] == tuple([])
+assert l[-3:-1] == (2,3)
+
+l1 = [1];l2 = l1;l1.append(2);l3 = [1,1,2]
+assert l2[1] == 2
+assert l1 == l2
+assert l1*3 == [1,2,1,2,1,2]
+assert l3.count(1) == 2
+
+member = ['Tom', 'Sunny', 'Honer', 'Lily']
+teacher = [1,2,3]
+assert len(member + teacher) == 7
+assert member[0] == 'Tom'
+assert member[-2] == 'Honer'
+assert member[0:3] == ['Tom', 'Sunny', 'Honer']
+
+member.remove('Sunny')
+assert member == ['Tom', 'Honer', 'Lily']
+member.pop()
+assert member == ['Tom', 'Honer']
+del member[0]
+assert member == ['Honer']
+member.append('Jack')
+assert member == ['Honer','Jack']
+member.extend(teacher)
+assert member == ['Honer','Jack',1,2,3]
+member.insert(1,'Tom')
+assert member == ['Honer','Tom','Jack',1,2,3]
+member.clear()
+assert member == []
+member = teacher.copy()
+assert member == [1,2,3]
+
+l = []
+l.insert(0, 'l')
+l.insert(1, 'l')
+l.insert(0, 'h')
+l.insert(3, 'o')
+l.insert(1, 'e')
+assert l == ['h', 'e', 'l', 'l', 'o']
+assert l[-2] == 'l'
+
+# test sort
+a = [8, 2, 4, 2, 9]
+assert sorted(a) == [2, 2, 4, 8, 9]
+assert sorted(a, reverse=True) == [9, 8, 4, 2, 2]
+
+assert sorted(a, key=lambda x:-x, reverse=True) == [2, 2, 4, 8, 9]
+assert a == [8, 2, 4, 2, 9]
+
+b = [(1, 2), (3, 3), (5, 1)]
+b.sort(key=lambda x:x[1])
+assert b == [(5, 1), (1, 2), (3,3)]
+
+# unpacking builder
+a = [1, 2, 3]
+b = [*a, 4, 5]
+assert b == [1, 2, 3, 4, 5]
+
+a = []
+b = [*a, 1, 2, 3, *a, *a]
+assert b == [1, 2, 3]
+
+assert b[
+    1
+] == 2
+
+assert b[0
+] == 1
+
+assert b[0] == 1
+assert b[
+    0] == 1
+
+# repr recursive list
+
+a = []
+a.append(0)
+a.append([1, 2, a])
+
+assert repr(a) == "[0, [1, 2, [...]]]"
+
+# much more complicated cases
+a = [1, 2, 3]
+a.append(a)
+a.append([a])
+assert repr(a) == '[1, 2, 3, [...], [[...]]]'
+
+b = [1]
+b.append(a)
+assert repr(b) == '[1, [1, 2, 3, [...], [[...]]]]'
+b.append(a)
+a.append(b)
+b.append([a])
+assert repr(a) == '[1, 2, 3, [...], [[...]], [1, [...], [...], [[...]]]]'
+assert repr(b) == '[1, [1, 2, 3, [...], [[...]], [...]], [1, 2, 3, [...], [[...]], [...]], [[1, 2, 3, [...], [[...]], [...]]]]'
+
+a.append([b])
+b.append([a])
+assert repr(a) == '[1, 2, 3, [...], [[...]], [1, [...], [...], [[...]], [[...]]], [[1, [...], [...], [[...]], [[...]]]]]'
+assert repr(b) == '[1, [1, 2, 3, [...], [[...]], [...], [[...]]], [1, 2, 3, [...], [[...]], [...], [[...]]], [[1, 2, 3, [...], [[...]], [...], [[...]]]], [[1, 2, 3, [...], [[...]], [...], [[...]]]]]'
+
+# slice extras
+class A:
+    def __getitem__(self, index):
+        return index
+
+print(A()[1:2, 3] == (slice(1, 2, None), 3))
+
+assert A()[1:2, 3] == (slice(1, 2, None), 3)
+assert A()[1:2, 3:4] == (slice(1, 2, None), slice(3, 4, None))
+assert A()[1:2, 3:4, 5] == (slice(1, 2, None), slice(3, 4, None), 5)
+assert A()[:, :] == (slice(None, None, None), slice(None, None, None))
+assert A()[::, :] == (slice(None, None, None), slice(None, None, None))
+assert A()[::, :2] == (slice(None, None, None), slice(None, 2, None))
+assert A()['b':'c':1, :] == (slice('b', 'c', 1), slice(None, None, None))
+assert A()[1:2, :A()[3:4, ::-1]] == (slice(1, 2, None), slice(None, (slice(3, 4, None), slice(None, None, -1)), None))
+
+print('08_list passed.')
+
+try:
+    import os
+except ImportError:
+    pass
+
+def f20():
+    import math as m
+    assert m.pi > 3
+
+f20()
+
+from math import *
+assert pi > 3
+
+print('20_import passed.')
+
+x = "lily"
+y = 16
+z = 163.532
+
+s = '%sssss'%x
+assert s == 'lilyssss'
+d = '%d1ssss'%y
+assert d == '161ssss'
+d = '%f1ssss'%y
+assert d == '16.0000001ssss'
+d = '%.6f1ssss'%y
+assert d == '16.0000001ssss'
+d = '%.3f2ssss'%y
+assert d == '16.0002ssss'
+f = 'ssss%.2f'%z
+assert f == 'ssss163.53'
+f = 'ssss%.5f'%z
+assert f == 'ssss163.53200'
+f = 'ssss%d'%z
+assert f == 'ssss163'
+f = 'ssss%s11+ss%'%z
+assert f == 'ssss163.53211+ss%'
+
+try:
+    f = 'ssss%d'%x
+    assert False
+except TypeError:
+    pass
+
+try:
+    f = 'fdafd%.4f'%x
+    assert False
+except TypeError:
+    pass
+
+g = {1, 2, 3}
+s = '%sssss'%g
+assert s == '{1, 2, 3}ssss'
+l = [1, '222', '%s']
+s = '%sssss'%l
+assert s == "[1, '222', '%s']ssss"
+t = (1, 2, 3)
+s = "%s+321,%s,3214%s"%t
+assert s == '1+321,2,32143'
+t = (1, 3.4214, '32132155%%kkk3+%$#@')
+s = "%d+321,%.2f,3214%s"%t
+assert s == '1+321,3.42,321432132155%%kkk3+%$#@'
+s = "%.4f+321,%d,3214%s"%t
+assert s == '1.0000+321,3,321432132155%%kkk3+%$#@'
+try:
+    s = "%.4f+321,%d,3214%f"%t
+    assert False
+except TypeError:
+    pass
+
+d = "%s, %d, %.1f"%(x, y, z)
+assert d == 'lily, 16, 163.5'
+d = "%s, %d, %.1f"   %('332)', y, z)
+assert d == '332), 16, 163.5'
+d = "%s, %d, %.1f"   %('332)'+x+x, y+y*y, z-z+y*z)
+assert d == '332)lilylily, 272, 2616.5'
+
+try:
+    d = "%s, %d, %.1f"   %('332)'+x+x, y+y*y-x, z-z+y*z)
+    assert False
+except TypeError:
+    pass
+d = "%s, %d, %.1f"%([x,x,x,x,y,y,y,y,z,z,z,z], y, z)
+assert d == "['lily', 'lily', 'lily', 'lily', 16, 16, 16, 16, 163.532, 163.532, 163.532, 163.532], 16, 163.5"
+d = "%s, %d, %.1f"%({(x,x,x),(y,y,y,y),(z,z,z,z)}, y, z)
+assert d == "{('lily', 'lily', 'lily'), (16, 16, 16, 16), (163.532, 163.532, 163.532, 163.532)}, 16, 163.5"
+
+d = "%s"   %[(x, y), z]
+assert d == "[('lily', 16), 163.532]"
+d = "%s"   %{('332)'), y, z}
+assert d == "{'332)', 16, 163.532}"
+
+try:
+    d = "%s, %d, %.1f"  %[x,y,z]
+    assert False
+except TypeError:
+    pass
+
+try:
+    d = "%s, %d, %.1f"  %{x,y,z}
+    assert False
+except TypeError:
+    pass
+
+
+print('28_cstring passed.')
+
+a = 1 + 2 \
+    + 3
+
+assert a == 6
+
+assert 1 + 2 \
+       + 3 == 6
+
+assert 1 + 2 + \
+       3 + \
+       4 == 10
+
+assert 1 + 2 + \
+       3 + \
+       4 + 5 + 6 \
+       == 21
+
+if 1 and 2 \
+        and 3 \
+        and 4 \
+        and 5:
+    assert True
+else:
+    assert False
+
+1 and 2 \
+and 3 \
+and 4
+
+a = 1
+assert a == 1
+
+print("04_line_continue passed.")
+tup = ('Google', 'Runoob', 'Taobao', 'Wiki', 'Weibo','Weixin')
+a,b = 1,2
+assert a == 1
+assert b == 2
+a,b = b,a
+assert a == 2
+assert b == 1
+assert len(tup) == 6
+
+# unpacking builder
+a = 1, 2, 3
+b = *a, 4, 5
+assert b == (1, 2, 3, 4, 5)
+
+a = tuple([])
+b = *a, 1, 2, 3, *a, *a
+assert b == (1, 2, 3)
+
+
+assert (1,) == tuple([1])
+assert (1,2,) == tuple([1,2])
+
+a = 1,
+assert a == (1,)
+
+print('09_tuple passed.')
+
+## Function Tests.
+
+def f1():
+    return 'f1'
+assert f1() == 'f1'
+def f2(a, b, c, d):
+    return c
+assert f2('a', 'b', 'c', 'd') == 'c'
+def f3(a,b):
+    return a - b
+assert f3(1,2) == -1
+
+def f4(a,b):
+    return a + f3(a, b)
+
+assert f4(1,2) == 0
+
+def fact(n):
+    if n == 1:
+        return 1
+    return n * fact(n - 1)
+assert fact(5)==120
+
+def f(a=1, b=-1):
+    return a + b
+
+assert f() == 0
+assert f(1, 2) == 3
+assert f(-5) == -6
+assert f(b=5) == 6
+assert f(a=5) == 4
+assert f(b=5, a=5) == 10
+
+def f(*args):
+    return 10 * sum(args)
+
+assert f(1, 2, 3) == 60
+
+def f(x, *args, y=3):
+    i = 0
+    for j in args:
+        i += j
+    return i * y
+
+assert f(10, 1, 2, 3) == 18
+
+def f(a, b, *c, d=2, e=5):
+    return a + b + d + e + sum(c)
+
+def g(*args, **kwargs):
+    return f(*args, **kwargs)
+
+assert f(1, 2, 3, 4) == 17
+assert f(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) == 62
+assert f(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, d=1, e=2) == 58
+assert f(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, e=1, d=2) == 58
+assert f(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, d=1) == 61
+assert f(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, e=1) == 58
+assert f(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20) == 217
+assert f(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, d=1, e=2) == 213
+
+assert g(1, 2, 3, 4) == 17
+assert g(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) == 62
+assert g(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, d=1, e=2) == 58
+assert g(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, e=1, d=2) == 58
+assert g(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, d=1) == 61
+assert g(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, e=1) == 58
+
+a = 1
+b = 2
+
+def f():
+    global a, b
+    a = 3
+    b = 4
+
+f()
+assert a == 3
+assert b == 4
+
+def g(a, b, *args, c=1, d=2, **kwargs):
+    S = a + b + c + d + sum(args)
+    return S, kwargs
+
+S, kwargs = g(1, 2, 3, 4, 5, c=4, e=5, f=6)
+# a = 1
+# b = 2
+# c = 4
+# d = 2
+# sum(args) = 3 + 4 + 5 = 12
+# S = 1 + 2 + 4 + 2 + 12 = 21
+
+assert S == 21
+assert kwargs == {'e': 5, 'f': 6}
+
+# test tuple defaults
+
+#error
+def f(a=(1,)):
+    return a
+assert f() == (1,)
+
+def f(a=(1,2)):
+    return a
+assert f() == (1,2)
+
+def f(a=(1,2,3)):
+    return a
+assert f() == (1,2,3)
+
+def f(a=(1,2,3,)):
+    return a
+assert f() == (1,2,3)
+
+def f(a=(1,(2,3))):
+    return a
+assert f() == (1,(2,3))
+
+def f(a=((1,2),3), b=(4,)):
+    return a, b
+
+assert f() == (((1,2),3), (4,))
+
+print('13_function passed.')
+
+# test == !=
+assert True == True
+assert True != False
+assert False == False
+assert False != True
+
+# test and/or/not
+assert True and True
+assert not (True and False)
+assert True or True
+assert True or False
+assert not False
+assert not (not True)
+
+assert bool(0) == False
+assert bool(1) == True
+assert bool([]) == False
+assert bool("abc") == True
+assert bool([1,2]) == True
+assert bool('') == False
+
+print("03_bool passed.")
+a = [1, 2, 3]
+a = iter(a)
+
+total = 0
+
+while True:
+    obj = next(a)
+    if obj is StopIteration:
+        break
+    total += obj
+
+assert total == 6
+
+class Task:
+    def __init__(self, n):
+        self.n = n
+
+    def __iter__(self):
+        self.i = 0
+        return self
+
+    def __next__(self):
+        if self.i == self.n:
+            return StopIteration
+        self.i += 1
+        return self.i
+
+a = Task(3)
+assert sum(a) == 6
+
+i = iter(Task(5))
+assert next(i) == 1
+assert next(i) == 2
+assert next(i) == 3
+assert next(i) == 4
+assert next(i) == 5
+assert next(i) == StopIteration
+assert next(i) == StopIteration
+
+print('19_iter passed.')
+
+a = []
+
+for i in range(10):         # [0]
+    for j in range(10):     # [0-0]
+        -> test
+        print(2)
+    == test ==
+    a.append(i)
+    for k in range(5):      # [0-1]
+        for t in range(7):  # [0-1-0]
+            pass
+
+assert a == list(range(10))
+
+b = False
+
+for i in range(10):         # [1]
+    for j in range(10):     # [1-0]
+        -> out
+        b = True
+== out ==
+assert not b
+
+sumx = 0
+i = 1
+
+== loop ==
+sumx += i
+i += 1
+if i <= 100:
+    -> loop
+
+assert sumx == 5050
+
+for i in range(4):
+    _ = 0
+# if there is no op here, the block check will fail
+while i: --i
+
+print('18_goto passed.')
+
+# if tests
+flag = False
+name = 'test'
+if name == 'python':
+    flag = True
+else:
+    flag
+assert flag == False
+
+
+num = 9
+flag = 0
+if num >= 0 and num <= 10:
+    flag = 1
+else:
+    flag
+assert flag == 1
+
+num = 10
+flag = 0
+if num < 0 or num > 10:
+    flag = 1
+else:
+    flag
+assert flag == 0
+
+num = 5
+result = 0
+if num == 3:
+    result = num
+elif num == 2:
+    result = num
+elif num == 1:
+    result = num
+elif num < 0:
+    result = num
+else:
+    result = num
+assert result == 5
+
+# for tests
+
+k = 0
+for i in range(2, 1000):
+  if i % 2 == 0:
+    k += 1
+assert k ==499
+
+k = 0
+for x in range(100):
+    if x<2:
+      continue
+    flag = True
+    for i in range(2,x):
+      if x%i == 0:
+        flag = False
+        break
+    if flag:
+      k += 1
+assert k == 25
+
+#while tests
+count = 0
+while (count < 1000):
+   count = count + 1
+assert count == 1000
+
+# ternary operator
+d = 1 if 2 > 1 else 2
+assert d == 1
+d = 1 if 2 < 1 else 2
+assert d == 2
+
+t = 0
+for i in range(5):
+    try:
+        break
+    except:
+        pass
+    t = 1
+assert t == 0
+
+t = 0
+for i in range(5):
+    if True and 1:
+        break
+    t = 1
+assert t == 0
+
+for i in range(5):
+    break
+else:
+    assert False
+
+for i in range(5):
+    if i==3:
+        break
+else:
+    assert False
+
+flag = False
+for i in range(5):
+    if i==6:
+        break
+else:
+    flag = True
+assert flag is True
+
+while True:
+    break
+else:
+    assert False
+
+flag = False
+while False:
+    assert False
+else:
+    flag = True
+assert flag is True
+
+x = 1
+while 0:
+    while True:
+        break
+else:
+    x = 2
+assert x == 2
+
+if x == 2:
+    while 0:
+        pass
+else:
+    x = 3
+assert x == 2
+
+print("07_if_for passed.")
+
+a = 1
+b = 1
+assert a is b
+assert a is 1
+
+# ignore float
+#a = 1.1
+#b = 1.1
+#assert a is not b
+#assert a is a
+#assert a is not 1.1
+#assert a == 1.1
+#assert a == b
+
+a = '111'
+b = '111'
+assert a is b
+
+a = True
+b = True
+assert a is b
+assert a is True
+assert b is not False
+
+a = None
+b = None
+assert a is b
+assert a is None
+assert b is None
+
+a = [1, 'a', 2]
+b = [1, 'a', 2]
+assert a is not b
+
+a = []
+b = []
+assert a is not b
+
+a = {}
+b = {}
+assert a is not b
+
+a = {1, 2}
+b = {1, 2}
+assert a is not b
+print('12_is passed.')
+
+assert 1<2
+assert 1+1==2
+assert 2+1>=2
+
+assert 1<2<3
+assert 1<2<3<4
+assert 1<2<3<4<5
+
+assert 1<1+1<3
+assert 1<1+1<3<4
+assert 1<1+1<3<2+2<5
+
+a = [1,2,3]
+assert a[0] < a[1] < a[2]
+assert a[0]+1 == a[1] < a[2]
+assert a[0]+1 == a[1] < a[2]+1 < 5
+
+assert (4>3<2) == False
+
+#dict compare
+a = {i: i**2 for i in range(10)}
+assert a == {0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36, 7: 49, 8: 64, 9: 81}
+
+a = {i: i**2 for i in range(10) if i % 2 == 0}
+assert a == {0: 0, 2: 4, 4: 16, 6: 36, 8: 64}
+
+b = {k:v for k,v in a.items()}
+assert b == a
+
+#list compare
+a = [i for i in range(10)]
+assert a == list(range(10))
+
+a = [i for i in range(10) if i % 2 == 0]
+assert a == [0, 2, 4, 6, 8]
+
+a = [i**3 for i in range(10) if i % 2 == 0]
+assert a == [0, 8, 64, 216, 512]
+
+a = [1, 2, 3, 4]
+assert a.pop() == 4
+assert a == [1, 2, 3]
+assert a.pop(0) == 1
+assert a == [2, 3]
+assert a.pop(-2) == 2
+assert a == [3]
+
+a = []
+a.sort()
+assert len(a) == 0
+assert a == []
+
+a = [1]
+a.sort()
+assert len(a) == 1
+assert a == [1]
+
+a = [1, 2, 3, 4]
+assert reversed(a) == [4, 3, 2, 1]
+assert a == [1, 2, 3, 4]
+a = (1, 2, 3, 4)
+assert reversed(a) == [4, 3, 2, 1]
+assert a == (1, 2, 3, 4)
+a = '1234'
+assert reversed(a) == ['4', '3', '2', '1']
+assert a == '1234'
+
+assert reversed([]) == []
+assert reversed('') == []
+assert reversed('测试') == ['试', '测']
+
+a = [
+    [(i,j) for j in range(10) if j % 2 == 0]
+    for i in range(10) if i % 2 == 1
+]
+
+assert a == [[(1, 0), (1, 2), (1, 4), (1, 6), (1, 8)], [(3, 0), (3, 2), (3, 4), (3, 6), (3, 8)], [(5, 0), (5, 2), (5, 4), (5, 6), (5, 8)], [(7, 0), (7, 2), (7, 4), (7, 6), (7, 8)], [(9, 0), (9, 2), (9, 4), (9, 6), (9, 8)]]
+
+#set compare
+a = {i for i in range(10)}
+assert a == set(range(10))
+
+a = {i for i in range(10) if i % 2 == 0}
+assert a == {0, 2, 4, 6, 8}
+
+a = {i**3 for i in range(10) if i % 2 == 0}
+assert a == {0, 8, 64, 216, 512}
+
+a = {(i,i+1) for i in range(5)}
+assert a == {(0, 1), (1, 2), (2, 3), (3, 4), (4, 5)}
+
+print('14_cmp passed.')
+
+class A: pass
+class B: pass
+a = A()
+assert type(a) is A
+
+x = 0
+if x==0: x=1
+assert x==1
+
+def f(x, y): return x+y
+assert f(1,2)==3
+
+c = 1
+if c==0: x=1
+elif c==1: x=2
+else: x=3
+assert x==2
+
+def f1(x): return x+1
+assert f1(1)==2
+
+print('16_inlineblocks passed.')
+
+a = [
+    1,2,3,
+    4,5,6
+]
+
+assert sum(a) == 21
+
+c = [
+    i for i in range(10)
+    if i % 2 == 0
+]
+
+assert sum(c) == 20
+
+d = (
+    1,2,3
+)
+
+assert sum(d) == 6
+
+b = {
+    'a': 1,
+    'b': 2,
+    'c': 3
+}
+
+assert sum(b.values()) == 6
+
+print('17_multiline passed.')
+
+assert 'testing' == 'test' + 'ing'
+assert 'testing' != 'test' + 'ing2'
+assert 'testing' < 'test' + 'ing2'
+assert 'testing' <= 'test' + 'ing2'
+assert 'testing5' > 'test' + 'ing1'
+assert 'testing5' >= 'test' + 'ing1'
+
+# test + *=
+assert 'abc' + 'def' == 'abcdef'
+assert 'abc' * 3 == 'abcabcabc'
+
+# [1:-1]: ignore the delimited singe quotes
+assert repr('\\\n\t\'\r\b\x48')[1:-1] == r"\\\n\t'\r\x08H"
+a = ''
+b = 'test'
+c ='test'
+assert len(a) == 0
+assert len(b) == 4
+assert b == c
+
+# upper and lower does not work for utf-8
+assert ''.lower() == '' and ''.upper() == ''
+assert 'already+lower '.lower() == 'already+lower '
+assert 'ALREADY+UPPER '.upper() == 'ALREADY+UPPER '
+assert 'tEST+InG'.lower() == 'test+ing'
+assert 'tEST+InG'.upper() == 'TEST+ING'
+
+s = "football"
+q = "abcd"
+r = "zoo"
+t = "this is string example....wow!!!"
+assert s[0] == 'f'
+assert s[1:4] == 'oot'
+assert s[:-1] == 'footbal'
+assert s[:10] == 'football'
+assert s[-3] == 'a'
+assert t[-5:] == 'ow!!!'
+assert t[3:-3] == 's is string example....wow'
+assert s > q;assert s < r
+assert s.replace("o","") == "ftball"
+assert s.replace("o","O",1) == "fOotball"
+assert s.replace("foo","ball",1) == "balltball"
+assert s.startswith('f') == True;assert s.endswith('o') == False
+assert t.startswith('this') == True;
+
+assert t.split('w') == ['this is string example....', 'o', '!!!']
+assert "a,b,c".split(',') == ['a', 'b', 'c']
+
+assert 'a,'.split(',') == ['a']
+assert 'foo!!bar!!baz'.split('!!') == ['foo', 'bar', 'baz']
+assert ' 4 3 '.split() == ['4', '3']
+assert '  4 3  '.split(' ') == ['4', '3']
+
+x = 'aa bb cccc'
+assert x.split('cc') == ['aa bb ']
+
+assert '111'.count('1') == 3
+assert '111'.count('11') == 1
+assert '1111'.count('11') == 2
+assert '11'.count('') == 3
+assert ''.count('1') == 0
+assert ''.count('') == 1
+
+t = "*****this is **string** example....wow!!!*****"
+s = "123abcrunoob321"
+assert t.strip( '*' ) == "this is **string** example....wow!!!"
+assert s.strip( '12' ) == "3abcrunoob3"
+
+assert t.strip( '*' ) == "this is **string** example....wow!!!"
+assert s.strip( '12' ) == "3abcrunoob3"
+
+assert '测试123'.strip('测试') == '123'
+assert '测试123测试'.strip('测试') == '123'
+assert '123测试'.strip('2') == '123测试'
+assert '测试123'.strip('测') == '试123'
+assert '测试123'.strip('试') == '测试123'
+
+assert '测试123测试'.lstrip('测试') == '123测试'
+assert '测试123测试'.rstrip('测试') == '测试123'
+assert 'abc'.lstrip('a') == 'bc'
+assert 'abc'.lstrip('b') == 'abc'
+assert 'abc'.lstrip('c') == 'abc'
+assert 'abc'.rstrip('a') == 'abc'
+assert 'abc'.rstrip('b') == 'abc'
+assert 'abc'.rstrip('c') == 'ab'
+
+assert 'abc'.lstrip('abc') == ''
+assert 'abc'.rstrip('abc') == ''
+assert 'abc'.strip('abc') == ''
+s = ' asd\n  asd \n'
+assert s.strip() == 'asd\n  asd'
+s1 = "-"
+s2 = ""
+seq = ["r","u","n","o","o","b"]
+assert s1.join( seq ) == "r-u-n-o-o-b"
+assert s2.join( seq ) == "runoob"
+assert 'x'.zfill(5) == '0000x'
+assert '568'.zfill(1) == '568'
+def test(*seq):
+    return s1.join(seq)
+assert test("r", "u", "n", "o", "o", "b") == "r-u-n-o-o-b"
+num = 6
+assert str(num) == '6'
+# test Lo group names
+测试 = "test"
+assert 测试 == "test"
+assert "Hello, {}!".format("World") == "Hello, World!"
+assert "{} {} {}".format("I", "love", "Python") == "I love Python"
+assert "{0} {1} {2}".format("I", "love", "Python") == "I love Python"
+assert "{2} {1} {0}".format("I", "love", "Python") == "Python love I"
+assert "{0}{1}{0}".format("abra", "cad") == "abracadabra"
+
+assert "{0}={1}".format('{0}', '{1}') == "{0}={1}"
+assert "{{{0}}}".format(1) == "{1}"
+assert "{0}{1}{1}".format(1, 2, 3) == "122"
+assert "{{{}xxx{}x}}".format(1, 2) == "{1xxx2x}"
+assert "{{abc}}".format() == "{abc}"
+# 3rd slice
+a = "Hello, World!"
+assert a[::-1] == "!dlroW ,olleH"
+assert a[::2] == "Hlo ol!"
+assert a[2:5:2] == "lo"
+assert a[5:2:-1] == ",ol"
+assert a[5:2:-2] == ",l"
+b = list(a)
+assert b == ['H', 'e', 'l', 'l', 'o', ',', ' ', 'W', 'o', 'r', 'l', 'd', '!']
+assert b[::-1] == ['!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H']
+assert b[::2] == ['H', 'l', 'o', ' ', 'o', 'l', '!']
+assert b[2:5:2] == ['l', 'o']
+assert b[5:2:-1] == [',', 'o', 'l']
+assert b[5:2:-2] == [',', 'l']
+a = '123'
+assert a.rjust(5) == '  123'
+assert a.rjust(5, '0') == '00123'
+assert a.ljust(5) == '123  '
+assert a.ljust(5, '0') == '12300'
+
+assert '\x30\x31\x32' == '012'
+a = 'abcd'
+assert list(a) == ['a', 'b', 'c', 'd']
+a = '测试'
+assert list(a) == ['测', '试']
+a = 'a测b试c'
+assert list(a) == ['a', '测', 'b', '试', 'c']
+a = 'a测b试'
+assert list(a) == ['a', '测', 'b', '试']
+a = '测b试c'
+assert list(a) == ['测', 'b', '试', 'c']
+a = '测b'
+assert list(a) == ['测', 'b']
+a = 'b'
+assert list(a) == ['b']
+a = '测'
+assert list(a) == ['测']
+assert '\b\b\b' == '\x08\x08\x08'
+
+stack=[1,2,3,4]; assert f"{stack[2:]}" == '[3, 4]'
+
+assert repr('\x1f\x1e\x1f') == '\'\\x1f\\x1e\\x1f\''
+
+print("05_str passed.")
+
+emptyDict = dict()
+assert len(emptyDict) == 0
+tinydict = {'Name': 'Tom', 'Age': 7, 'Class': 'First'}
+assert tinydict['Name'] == 'Tom';assert tinydict['Age'] == 7
+tinydict['Age'] = 8;tinydict['School'] = "aaa"
+assert tinydict['Age'] == 8;assert tinydict['School'] == "aaa"
+del tinydict['Name']
+assert len(tinydict) == 3
+tinydict.clear()
+assert len(tinydict) == 0
+
+dict1 = {'user':'circle','num':[1,2,3]}
+dict2 = dict1.copy()
+for k,v in dict1.items():
+    assert dict2[k] == v
+
+tinydict = {'Name': 'circle', 'Age': 7}
+tinydict2 = {'Sex': 'female' }
+assert len(tinydict) == 2
+assert len(tinydict2) == 1
+tinydict.update(tinydict2)
+updated_dict = {'Name': 'circle', 'Age': 7, 'Sex': 'female'}
+for k,v in tinydict.items():
+    assert updated_dict[k] == v
+assert len(tinydict) == 3
+assert tinydict == updated_dict
+
+dishes = {'eggs': 2, 'sausage': 1, 'bacon': 1, 'spam': 500}
+# dict is now ordered
+assert dishes.keys() == ('eggs', 'sausage', 'bacon', 'spam')
+assert dishes.values() == (2, 1, 1, 500)
+
+d={1:"a",2:"b",3:"c"}
+result=[]
+for k,v in d.items():
+    result.append(k)
+    result.append(v)
+assert len(result) == 6
+
+del d[2]
+assert len(d) == 2
+assert d.keys() == (1, 3)
+assert d.values() == ('a', 'c')
+del d[1]
+del d[3]
+assert len(d) == 0
+
+# test __eq__
+d1 = {1:2, 3:4}
+d2 = {3:4, 1:2}
+d3 = {1:2, 3:4, 5:6}
+assert d1 == d2
+assert d1 != d3
+
+a = dict([(1, 2), (3, 4)])
+assert a == {1: 2, 3: 4}
+
+assert a.pop(1) == 2
+assert a == {3: 4}
+assert a.pop(3) == 4
+assert a == {}
+
+# unpacking builder
+a = {1:2, 3:4}
+b = {**a, 5:6, **a}
+assert b == {1: 2, 3: 4, 5: 6}
+
+a = {}
+b = {**a, 1:2, 3:4}
+assert b == {1: 2, 3: 4}
+
+a = {1:2, 3:4, 7:8}
+b = {**a, 1:5, 3:6}
+c = {**a, **b}
+assert c == {1: 5, 3: 6, 7: 8}
+
+a = {}
+for i in range(100):
+    a[i] = i
+assert len(a) == 100
+for i in range(100):
+    del a[i]
+assert len(a) == 0
+
+a = {
+    str(i): i
+    for i in range(10)
+}
+
+# TODO: addd generator
+# for i, s in enumerate(a):
+#    assert s == str(i)
+
+
+a = {'g': 0}
+
+a['ball_3'] = 0
+a['ball_4'] = 0
+assert a.keys() == ('g', 'ball_3', 'ball_4')
+del a['ball_3']
+assert a.keys() == ('g', 'ball_4')
+del a['ball_4']
+assert a.keys() == ('g',)
+del a['g']
+assert len(a) == 0
+
+# ultra test!!
+a = {'0': 0, '1': 1}
+for i in range(2, 100):
+    a[str(i)] = i
+    del a[str(i - 2)]
+    assert a[str(i - 1)] == i - 1
+
+a = {'0': 0, '1': 1}
+b = ['0', '1']
+
+# dict delete test
+data = []
+j = 6
+for i in range(60093, 65535):
+    j = ((j*5+1) % 65535)
+    data.append(str(j))
+
+for i in range(len(data)):
+    z = data[i]
+    a[z] = i
+    b.append(z)
+    if i % 3 == 0:
+        y = b.pop()
+        del a[y]
+
+a = {1: 2, 3: 4}
+assert a.pop(1) == 2
+try:
+    a.pop(1)
+    exit(1)
+except KeyError:
+    pass
+
+assert a.pop(1, None) is None
+
+try:
+    a.pop(1, 2, 3)
+    exit(1)
+except TypeError:
+    pass
+
+a = {1: 2, 3: 4}
+a['a'] = a
+assert repr(a) == "{1: 2, 3: 4, 'a': {...}}"
+
+# __dict__
+a = ("a", "b", "c", "d", "e", "f", "g", "h")
+x = slice(0,8,3)
+print(x.step)
+try:
+    print(x.__dict__)
+except AttributeError:
+    pass
+
+z = 1
+try:
+    print(z.__dict__)
+except AttributeError:
+    pass
+
+class A:
+    i = 1
+
+assert repr(A.__dict__).startswith('mappingproxy') == True
+
+a = A()
+assert repr(a.__dict__).startswith('mappingproxy') == False
+
+
+print('10_dict passed.')
+
+try:
+    raise 1
+except TypeError:
+    pass
+
+try:
+    raise KeyError
+except KeyError:
+    pass
+
+x = 0
+try:
+    assert False
+    x = 1
+    assert False
+except AssertionError:
+    pass
+assert x == 0
+
+try:
+    for i in range(5):
+        raise KeyError(i)
+    assert False
+except KeyError:
+    pass
+
+x = 0
+for i in range(5):
+    try:
+        for j in range(5):
+            while True:
+                raise KeyError(i)
+                x += 3
+    except KeyError:
+        x += i
+assert x == 10
+
+x = 0
+y = 0
+for i in range(5):
+    try:
+        t = 1
+        for j in range(5):
+            while True:
+                v1 = 1
+                v2 = 21
+                v3 = 31
+                y += v1 + v2 + v3
+                raise KeyError(i)
+                x += 3
+    except KeyError:
+        z = i
+        x += z
+
+assert y == 265
+assert x == 10
+
+
+class A:
+    def __getitem__(self, i):
+        raise KeyError(i)
+
+try:
+    a = A()
+    b = a[1]
+    assert False
+except:
+    pass
+
+try:
+    a = {'1': 3, 4: None}
+    x = a[1]
+    assert False
+except:
+    pass
+assert True
+
+def f():
+    try:
+        raise KeyError('foo')
+    except IndexError:   # will fail to catch
+        assert False
+    except:
+        pass
+    assert True
+
+f()
+
+def f1():
+    try:
+        assert 1 + 2 == 3
+        try:
+            a = {1: 2, 3: 4}
+            x = a[0]
+        except RuntimeError:
+            assert False
+    except IndexError:
+        assert False
+    assert False
+
+try:
+    f1()
+    assert False
+except KeyError:
+    pass
+#
+#
+assert True, "Msg"
+try:
+    assert False, "Msg"
+    assert False
+except AssertionError:
+    pass
+
+def f(a: list):
+    try:
+        raise ValueError
+        assert False
+    except:
+        pass
+    a[0] = 1
+a = [0]
+f(a)
+assert a == [1]
+
+class MyException(Exception):
+    pass
+
+class MyException2(MyException):
+    pass
+
+try:
+    raise MyException2
+except MyException as e:
+    ok = True
+except Exception:
+    assert False
+assert ok
+
+#TODO: support eval mode
+# ok = False
+# try:
+#     eval('1+')
+# except SyntaxError as e:
+#     assert type(e) is SyntaxError
+#     ok = True
+# assert ok
+
+# finally, only
+def finally_only():
+    try:
+        raise KeyError
+    finally:
+        return True
+
+assert finally_only() is True
+
+def finally_only_2():
+    try:
+        pass
+    finally:
+        return True
+
+assert finally_only_2() is True
+
+# finally, no exception
+def finally_no_exception():
+    ok = False
+    try:
+        pass
+    except KeyError:
+        assert False
+    finally:
+        ok = True
+    return ok
+
+assert finally_no_exception()
+
+# finally, match
+def finally_match():
+    ok = False
+    try:
+        raise KeyError
+    except KeyError:
+        pass
+    finally:
+        ok = True
+    return ok
+
+assert finally_match()
+
+# finally, no match
+ok = False
+def finally_no_match():
+    global ok
+    try:
+        raise KeyError
+    except IndexError:
+        assert False
+    finally:
+        ok = True
+
+try:
+    finally_no_match()
+except KeyError:
+    assert ok
+
+print ('22_exceptions passed.')
+
+class A:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+
+    def add(self):
+        return self.a + self.b
+
+    def sub(self):
+        return self.a - self.b
+
+a = A(1, 2)
+assert a.add() == 3
+assert a.sub() == -1
+
+assert A.__base__ is object
+
+class B(A):
+    def __init__(self, a, b, c):
+        super(B, self).__init__(a, b)
+        self.c = c
+
+    def add(self):
+        return self.a + self.b + self.c
+
+    def sub(self):
+        return self.a - self.b - self.c
+
+assert B.__base__ is A
+
+b = B(1, 2, 3)
+assert b.add() == 6
+assert b.sub() == -4
+
+class C(B):
+    def __init__(self, a, b, c, d):
+        super(C, self).__init__(a, b, c)
+        self.d = d
+
+    def add(self):
+        return self.a + self.b + self.c + self.d
+
+    def sub(self):
+        return self.a - self.b - self.c - self.d
+
+assert C.__base__ is B
+
+c = C(1, 2, 3, 4)
+assert c.add() == 10
+assert c.sub() == -8
+
+class D(C):
+    def __init__(self, a, b, c, d, e):
+        super(D, self).__init__(a, b, c, d)
+        self.e = e
+
+    def add(self):
+        return super(D, self).add() + self.e
+
+    def sub(self):
+        return super(D, self).sub() - self.e
+
+assert D.__base__ is C
+
+d = D(1, 2, 3, 4, 5)
+assert d.add() == 15
+assert d.sub() == -13
+
+assert isinstance(1, int)
+assert isinstance(1, object)
+assert isinstance(C, type)
+assert isinstance(C, object)
+assert isinstance(d, object)
+assert isinstance(d, C)
+assert isinstance(d, B)
+assert isinstance(d, A)
+assert isinstance(object, object)
+assert isinstance(type, object)
+
+assert isinstance(1, (float, int))
+assert isinstance(1, (float, object))
+assert not isinstance(1, (float, str))
+assert isinstance(object, (int, type, float))
+assert not isinstance(object, (int, float, str))
+
+try:
+    isinstance(1, (1, 2))
+except:
+    pass
+
+try:
+    isinstance(1, 1)
+except:
+    pass
+
+class A:
+    a = 1
+    b = 2
+
+assert A.a == 1
+assert A.b == 2
+
+class B21(A):
+    b = 3
+    c = 4
+
+assert B21.b == 3
+assert B21.c == 4
+
+assert B21.a == 1
+
+class A:
+    x = 1
+    x = x + 1
+    y = 1
+    z = x + y
+
+assert A.x == 2
+assert A.y == 1
+assert A.z == 3
+
+class MyClass:
+    a = 1,2,3
+    b, c = 1, 2
+    d = b + c
+
+assert MyClass.a == (1, 2, 3)
+assert MyClass.b == 1
+assert MyClass.c == 2
+assert MyClass.d == 3
+
+class A:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+
+    def add(self):
+        return self.a + self.b
+
+    def sub(self):
+        return self.a - self.b
+
+a = A(1, 2)
+assert a.add() == 3
+assert a.sub() == -1
+
+assert A.__base__ is object
+
+class B(A):
+    def __init__(self, a, b, c):
+        super().__init__(a, b)
+        self.c = c
+
+    def add(self):
+        return self.a + self.b + self.c
+
+    def sub(self):
+        return self.a - self.b - self.c
+
+assert B.__base__ is A
+
+b = B(1, 2, 3)
+assert b.add() == 6
+assert b.sub() == -4
+
+class C(B):
+    def __init__(self, a, b, c, d):
+        super().__init__(a, b, c)
+        self.d = d
+
+    def add(self):
+        return self.a + self.b + self.c + self.d
+
+    def sub(self):
+        return self.a - self.b - self.c - self.d
+
+assert C.__base__ is B
+
+c = C(1, 2, 3, 4)
+assert c.add() == 10
+assert c.sub() == -8
+
+class D(C):
+    def __init__(self, a, b, c, d, e):
+        super().__init__(a, b, c, d)
+        self.e = e
+
+    def add(self):
+        return super().add() + self.e
+
+    def sub(self):
+        return super().sub() - self.e
+
+assert D.__base__ is C
+
+d = D(1, 2, 3, 4, 5)
+assert d.add() == 15
+assert d.sub() == -13
+
+assert isinstance(1, int)
+assert isinstance(1, object)
+assert isinstance(C, type)
+assert isinstance(C, object)
+assert isinstance(d, object)
+assert isinstance(d, C)
+assert isinstance(d, B)
+assert isinstance(d, A)
+assert isinstance(object, object)
+assert isinstance(type, object)
+
+assert isinstance(1, (float, int))
+assert isinstance(1, (float, object))
+assert not isinstance(1, (float, str))
+assert isinstance(object, (int, type, float))
+assert not isinstance(object, (int, float, str))
+
+try:
+    isinstance(1, (1, 2))
+    exit(1)
+except TypeError:
+    pass
+
+try:
+    isinstance(1, 1)
+    exit(1)
+except TypeError:
+    pass
+
+class A:
+    a = 1
+    b = 2
+
+assert A.a == 1
+assert A.b == 2
+
+class B(A):
+    b = 3
+    c = 4
+
+assert B.a == 1
+assert B.b == 3
+assert B.c == 4
+
+print('21_class passed.')
+
